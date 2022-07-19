@@ -1,0 +1,32 @@
+services:
+
+  db:
+    image: postgres:14.4-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - .data:/var/lib/postgresql/data
+
+  backend: 
+    image: simpletodo/backend
+    build: backend/
+    restart: always
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend:/code
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+    
+volumes:
+  db:
+    driver: local
