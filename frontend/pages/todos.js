@@ -2,31 +2,19 @@ import Layout from "../components/layout";
 import LogoutButton from "../components/logoutButton";
 import { useState } from 'react';
 import utilStyles from "../styles/utils.module.css";
-import { withSessionSsr } from "../lib/session";
 import callUrl from "../lib/callUrl";
+import useSWR, { SWRConfig } from 'swr'
 
-export const getServerSideProps = withSessionSsr(
-    async function getServerSideProps({ req }) {
-        const user = req.session.user;
 
-        // Not a good practice to send auth tokens without https, but this is only meant as a local project 
-        const { result, error } = await callUrl(
-            "http://backend:8000/api/todos/",
-            "GET",
-            user.token.access);
+export default function Todos() {
 
-        return {
-            props: {
-                user: req.session.user,
-                todos: result,
-                errorMessage: error
-            },
-        };
-    }
-)
+    const { data: user, userError } = useSWR('/api/user');
+    const { data: todos, todoError  } = useSWR('/api/todos');
 
-export default function Todos({ user, todos, errorMessage }) {
-
+    if (userError) return `Error UserApi: ${userError}`;
+    if (todoError) return `Error TodoApi: ${todoError}`;
+    if (!user || !todos) return <Layout>"Loading..."</Layout>;
+  
     return (
         <Layout>
 
@@ -34,8 +22,6 @@ export default function Todos({ user, todos, errorMessage }) {
 
             <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
                 <h2 className={utilStyles.headingLg}>Todos</h2>
-
-                <span>{errorMessage}</span>
 
                 <ul>{todos.map((todo) =>
                     <li key={todo.id}>
@@ -57,6 +43,7 @@ export function Todo({ item, user }) {
     async function toggleTodo(event) {
         console.log(event);
 
+        // Work in progress
         const { result, error } = await callUrl(
             `http://backend:8000/api/todos/${item.id}`,
             "PUT",
