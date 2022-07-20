@@ -1,13 +1,16 @@
 import Router from "next/router";
-import callUrl from "../lib/callUrl";
+import useSWR, { useSWRConfig } from 'swr'
+import fetchJson from "../lib/fetchJson";
 
 export default function LogoutButton() {
 
+    const { mutate } = useSWRConfig();
+
     async function onClick() {
 
-        const { result, error } = await callUrl(
-            "/api/logout",
-            "POST");
+        mutate("/api/user", await fetchJson("/api/logout", {
+            method: "POST",
+        }));
 
         Router.push("/");
     }

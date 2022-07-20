@@ -11,8 +11,8 @@ export const getServerSideProps = withSessionSsr(
 
         // Not a good practice to send auth tokens without https, but this is only meant as a local project 
         const { result, error } = await callUrl(
-            "http://0.0.0.0:8000/api/todos/",
-            'GET',
+            "http://backend:8000/api/todos/",
+            "GET",
             user.token.access);
 
         return {
@@ -50,7 +50,6 @@ export default function Todos({ user, todos, errorMessage }) {
     );
 }
 
-
 export function Todo({ item, user }) {
     const [todoText, setTodoText] = useState(item.text);
     const [editMode, setEditMode] = useState(false);
@@ -59,8 +58,8 @@ export function Todo({ item, user }) {
         console.log(event);
 
         const { result, error } = await callUrl(
-            `http://0.0.0.0:8000/api/todos/${item.id}`,
-            'PUT',
+            `http://backend:8000/api/todos/${item.id}`,
+            "PUT",
             user.token.access,
             {
                 id: item.id,

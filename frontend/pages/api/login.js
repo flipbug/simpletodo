@@ -23,7 +23,7 @@ async function loginRoute(req, res) {
 
 async function authenticateUser(username, password) {
 
-    const res = await fetch("http://0.0.0.0:8000/api/token/",
+    const res = await fetch("http://backend:8000/api/token/",
         {
             method: 'POST',
             body: JSON.stringify({
