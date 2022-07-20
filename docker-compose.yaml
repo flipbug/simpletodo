@@ -26,6 +26,18 @@ services:
       - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
+
+  frontend: 
+    image: simpletodo/frontend
+    build: frontend/
+    restart: always
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/code
+    command: 'npm run dev'
+    depends_on:
+      - backend
     
 volumes:
   db:
