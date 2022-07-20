@@ -5,47 +5,47 @@ import LoginForm from "../components/loginForm";
 import fetchJson, { FetchError } from "../lib/fetchJson";
 
 export default function Login() {
-  // here we just check if user is already logged in and redirect to profile
-  const { mutateUser } = useUser({
-    redirectTo: "/todos",
-    redirectIfFound: true,
-  });
+    // here we just check if user is already logged in and redirect to profile
+    const { mutateUser } = useUser({
+        redirectTo: "/todos",
+        redirectIfFound: true,
+    });
 
-  const [errorMsg, setErrorMsg] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
 
-  return (
-    <Layout>
-      <div className="login">
-        <LoginForm
-          errorMessage={errorMsg}
-          onSubmit={async function handleSubmit(event) {
-            event.preventDefault();
+    return (
+        <Layout>
+            <div className="login">
+                <LoginForm
+                    errorMessage={errorMsg}
+                    onSubmit={async function handleSubmit(event) {
+                        event.preventDefault();
 
-            const body = {
-              username: event.currentTarget.username.value,
-              password: event.currentTarget.password.value,
-            };
+                        const body = {
+                            username: event.currentTarget.username.value,
+                            password: event.currentTarget.password.value,
+                        };
 
-            try {
-              mutateUser(
-                await fetchJson("/api/login", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(body),
-                }),
-                false,
-              );
-            } catch (error) {
-              if (error instanceof FetchError) {
-                setErrorMsg(error.data.message);
-              } else {
-                console.error("An unexpected error happened:", error);
-              }
-            }
-          }}
-        />
-      </div>
-      <style jsx>{`
+                        try {
+                            mutateUser(
+                                await fetchJson("/api/login", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify(body),
+                                }),
+                                false,
+                            );
+                        } catch (error) {
+                            if (error instanceof FetchError) {
+                                setErrorMsg(error.data.message);
+                            } else {
+                                console.error("An unexpected error happened:", error);
+                            }
+                        }
+                    }}
+                />
+            </div>
+            <style jsx>{`
         .login {
           max-width: 21rem;
           margin: 0 auto;
@@ -54,6 +54,6 @@ export default function Login() {
           border-radius: 4px;
         }
       `}</style>
-    </Layout>
-  );
+        </Layout>
+    );
 }
